@@ -1,0 +1,67 @@
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.col-md-4 {
+    flex: 0 0 calc(33.333% - 1rem);
+    box-sizing: border-box;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-title {
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn {
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.btn-outline-primary {
+    color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.btn-outline-primary:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-outline-danger {
+    color: #d9534f;
+    border-color: #d9534f;
+}
+
+.btn-outline-danger:hover {
+    background-color: #d9534f;
+    color: white;
+}

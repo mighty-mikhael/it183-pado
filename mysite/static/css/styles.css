@@ -1,0 +1,127 @@
+/* General body styles */
+body {
+    background-color: #121212;
+    color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Cards container */
+.card {
+    background-color: #1e1e1e; /* Dark background color for the cards */
+    border-radius: 8px; /* Slight curved edges */
+    color: #fff; /* White text inside the card */
+    transition: 0.3s ease-in-out;
+    height: 350px; /* Set fixed height for cards */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures content is spaced out evenly */
+}
+
+/* Card title */
+.card-title {
+    color: #fff; /* White title */
+}
+
+/* Hover effect for cards */
+.card:hover {
+    box-shadow: 0 4px 10px rgba(0, 255, 0, 0.6); /* Green glow effect on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Card text (content) */
+.card-body {
+    color: #ddd; /* Lighter color for the card content */
+    flex-grow: 1; /* Ensures content is flexible and fills space */
+}
+
+/* Like/Dislike buttons inside the card */
+.card-footer button {
+    font-size: 18px;  /* Size of the buttons */
+    padding: 8px 12px;
+    background-color: transparent;
+    border: 2px solid #D3D3D3;  /* Default border color */
+    color: #D3D3D3;  /* Default color */
+    cursor: pointer;
+    outline: none;
+    transition: transform 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 8px;
+    position: relative;
+    z-index: 2; /* Ensure buttons stay on top of card hover effects */
+}
+
+/* Hover effect on Like/Dislike buttons */
+.card-footer button:hover {
+    transform: scale(1.1); /* Slightly enlarge button on hover */
+    box-shadow: 0 0 15px 5px #4CAF50, 0 0 25px 10px #4CAF50; /* Glow effect for like button */
+}
+
+/* Dislike button glow effect on hover */
+.card-footer .dislike-button:hover {
+    box-shadow: 0 0 15px 5px red, 0 0 25px 10px red; /* Glow effect for dislike button */
+}
+
+/* Like button active (green) */
+.like-button.active {
+    color: #4CAF50;  /* Green color for active like button */
+    border-color: #4CAF50;  /* Border color changes to green */
+}
+
+/* Dislike button active (red) */
+.dislike-button.active {
+    color: red;  /* Red color for active dislike button */
+    border-color: red;  /* Border color changes to red */
+}
+
+/* Remove the focus outline */
+.card-footer button:focus {
+    outline: none;
+}
+
+/* Navbar background */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #1f1f1f;
+    padding: 10px 20px;
+    z-index: 1000;
+}
+
+/* Logo in navbar */
+header .navbar-brand {
+    font-family: Arial, sans-serif;
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+/* Custom styling for "Corn" and "hub" */
+header .navbar-brand span:first-child {
+    color: white;
+}
+
+header .navbar-brand span:last-child {
+    color: black;
+    background-color: #4CAF50;
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+/* Main content styles */
+main {
+    margin-top: 80px; /* Prevent content overlap with fixed header */
+    padding: 20px;
+}
+
+/* Footer */
+footer {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 30px;
+}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>     
+    
+    input {
+    width: 100%;
+    }
+</style>
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-center" style="background-color: #4CAF50; color: white;">
+                    <h2>Register</h2>
+                </div>
+                <div class="card-body" style="background-color: #333; color: white;">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn w-100" style="background-color: #4CAF50; color: white;">Register</button>
+                    </form>
+                </div>
+                <div class="card-footer text-center" style="background-color: #333; color: white;">
+                    <p>Already have an account? <a href="{% url 'login' %}" style="color: #4CAF50;">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

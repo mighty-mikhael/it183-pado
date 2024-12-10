@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="text-center mb-4">Blog Posts</h1>
+    <div class="row g-4">
+        {% for post in blog_list %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm card-dark">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="max-height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body d-flex flex-column text-white">
+                    <h5 class="card-title">
+                        <a href="{% url 'blog_details' post.id %}" class="text-decoration-none text-white">{{ post.title }}</a>
+                    </h5>
+                    <p class="card-text">{{ post.content|truncatechars:100 }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <button class="like-button btn btn-outline-success" data-post-id="{{ post.id }}">
+                        <i class="fas fa-thumbs-up"></i> Like (<span class="like-count">{{ post.likes_count  }}</span>)
+                    </button>
+                    <button class="dislike-button btn btn-outline-danger" data-post-id="{{ post.id }}">
+                        <i class="fas fa-thumbs-down"></i> Dislike (<span class="dislike-count">{{ post.dislikes_count }}</span>)
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.like-button', function() {
+        const postId = $(this).data('post-id');
+        const likeCountSpan = $(this).find('.like-count');
+        const dislikeCountSpan = $(this).siblings('.dislike-button').find('.dislike-count');
+    
+        $.ajax({
+            url: `like/${postId}/`,
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            success: function(response) {
+                likeCountSpan.text(response.likes_count);
+                dislikeCountSpan.text(response.dislikes_count);
+            },
+            error: function() {
+                alert('An error occurred while liking the post.');
+            }
+        });
+    });
+    
+    $(document).on('click', '.dislike-button', function() {
+        const postId = $(this).data('post-id');
+        const dislikeCountSpan = $(this).find('.dislike-count');
+        const likeCountSpan = $(this).siblings('.like-button').find('.like-count');
+    
+        $.ajax({
+            url: `dislike/${postId}/`,
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            success: function(response) {
+                dislikeCountSpan.text(response.dislikes_count);
+                likeCountSpan.text(response.likes_count);
+            },
+            error: function() {
+                alert('An error occurred while disliking the post.');
+            }
+        });
+    });
+    
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load form_extras %}
+
+{% block content %}
+<div class="container mt-5 pt-5"> 
+    <h2 class="text-center mb-4">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Post</h2>
+    
+    <div class="card shadow-lg">
+        <div class="card-body" style="background-color: #333; color:#4CAF50">
+            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <!-- Render form fields with Bootstrap classes -->
+                {{ form.non_field_errors }}
+                <div class="mb-3">
+                    {{ form.title.label_tag }} <!-- Label -->
+                    {{ form.title|add_class:"form-control" }} <!-- Field -->
+                    {{ form.title.errors }} <!-- Errors -->
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.content.label_tag }}
+                    {{ form.content|add_class:"form-control" }}
+                    {{ form.content.errors }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.image.label_tag }}
+                    {{ form.image|add_class:"form-control" }}
+                    {{ form.image.errors }}
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-success w-100 py-2">
+                    {% if form.instance.pk %}Edit{% else %}Create{% endif %} Post
+                </button>
+            </form>
+            
+            <div class="actions mt-3 text-center">
+                <a href="{% url 'blog_list' %}" class="btn btn-link">Back to Blog List</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

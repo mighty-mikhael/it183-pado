@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1f1f1f;
+            border-bottom: 2px solid #4CAF50;
+            padding: 8px 20px;
+            z-index: 1000;
+        }
+
+        header .navbar-brand {
+            font-family: Arial, sans-serif;
+            font-size: 1.6rem;
+        }
+
+        header .navbar-brand span:first-child {
+            color: white;
+            font-weight: bold;
+        }
+
+        header .navbar-brand span:last-child {
+            color: black;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: #f9f9f9 !important;
+        }
+
+        .nav-link:hover {
+            color: #4CAF50 !important;
+        }
+
+        main {
+            margin-top: 80px;
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 30px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .like-button, .dislike-button, .edit-button, .delete-button {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            border: 2px solid #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            outline: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .like-button:hover, .dislike-button:hover, .edit-button:hover, .delete-button:hover {
+            transform: scale(1.05);
+        }
+
+        .like-button.active, .dislike-button.active, .edit-button.active, .delete-button.active {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .like-button, .dislike-button {
+            background-color: transparent;
+            border-color: #D3D3D3;
+            color: #D3D3D3;
+        }
+
+        .like-button.active, .dislike-button.active {
+            color: white;
+        }
+
+        .like-button i, .dislike-button i {
+            margin-right: 8px;
+        }
+
+        .edit-button, .delete-button {
+            background-color: transparent;
+            border-color: #4CAF50;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .edit-button:hover, .delete-button:hover {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+
+        .edit-button i, .delete-button i {
+            margin-right: 8px;
+        }
+
+        .post-image {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            padding-top: 56.25%;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .post-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-title {
+            font-size: 2rem;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .post-content {
+            margin-top: 30px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-start;
+            gap: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid h-auto">
+        {% if post.image %}
+            <div class="post-image">
+                <img src="{{ post.image.url }}" alt="{{ post.title }}">
+            </div>
+        {% else %}
+            <p>No image available for this post.</p>
+        {% endif %}
+
+        <h2 class="post-title">{{ post.title }}</h2>
+
+        <div class="button-group">
+            {% if request.user.is_authenticated %}
+                <!-- Like Button -->
+                <button 
+                    class="like-button {% if has_liked %}active{% endif %}" 
+                    id="like-btn-{{ post.id }}" 
+                    data-post-id="{{ post.id }}"
+                >
+                    <i class="fas fa-thumbs-up"></i> Like 
+                    <span id="like-count-{{ post.id }}">{{ likes_count }}</span>
+                </button>
+        
+                <!-- Dislike Button -->
+                <button 
+                    class="dislike-button {% if has_disliked %}active{% endif %}" 
+                    id="dislike-btn-{{ post.id }}" 
+                    data-post-id="{{ post.id }}"
+                >
+                    <i class="fas fa-thumbs-down"></i> Dislike 
+                    <span id="dislike-count-{{ post.id }}">{{ dislikes_count }}</span>
+                </button>
+        
+                <!-- Edit and Delete Buttons -->
+                {% if request.user == post.author or user.is_staff %}
+                    <a href="{% url 'update_post' post.id %}" class="edit-button">
+                        <i class="fas fa-edit"></i> Edit Post
+                    </a>
+                    <a href="#" data-url="{% url 'delete_post' post.id %}" class="delete-button btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete Post
+                    </a>
+                    
+                {% endif %}
+            {% else %}
+                <p><a href="{% url 'login' %}">Login</a> to like or dislike this post.</p>
+            {% endif %}
+        </div>
+        
+        
+        <div class="post-content">
+            <p>{{ post.content }}</p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).on('click', '.like-button', function() {
+            const postId = $(this).data('post-id');
+            const likeCountSpan = $(`#like-count-${postId}`);
+            const dislikeCountSpan = $(`#dislike-count-${postId}`);
+    
+            $.ajax({
+                url: `/posts/like/${postId}/`,
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                success: function(response) {
+                    likeCountSpan.text(response.likes_count);
+                    dislikeCountSpan.text(response.dislikes_count);
+    
+                    // Toggle button states
+                    $(`#like-btn-${postId}`).toggleClass('active');
+                    $(`#dislike-btn-${postId}`).removeClass('active');
+                },
+                error: function() {
+                    alert('Error processing your request.');
+                }
+            });
+        });
+    
+        $(document).on('click', '.dislike-button', function() {
+            const postId = $(this).data('post-id');
+            const dislikeCountSpan = $(`#dislike-count-${postId}`);
+            const likeCountSpan = $(`#like-count-${postId}`);
+    
+            $.ajax({
+                url: `/posts/dislike/${postId}/`,
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                success: function(response) {
+                    dislikeCountSpan.text(response.dislikes_count);
+                    likeCountSpan.text(response.likes_count);
+    
+                    // Toggle button states
+                    $(`#dislike-btn-${postId}`).toggleClass('active');
+                    $(`#like-btn-${postId}`).removeClass('active');
+                },
+                error: function() {
+                    alert('Error processing your request.');
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Attach a click event listener to all delete buttons
+            const deleteButtons = document.querySelectorAll('.delete-button');
+            
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the default link action
+                    
+                    const deleteUrl = this.getAttribute('data-url'); // Get the delete URL
+                    
+                    // SweetAlert confirmation dialog
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirect to the delete URL if confirmed
+                            window.location.href = deleteUrl;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    
+
+</body>
+</html>
+
+
+{% endblock content %}
